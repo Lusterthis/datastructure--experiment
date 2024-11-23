@@ -1,6 +1,8 @@
 #include"CommonHeaders.h"
 #include"ll.h"
 #include"llm.h"
+#include"tree.h"
+#include"graph.h"
 
 
 Array<string> an_arr(0);
@@ -22,24 +24,6 @@ void loadData(const string& filename) {
 
 int main()
 {
-    //system("chcp 65001");
-    //testArray();
-    //testSingleLinkedList();
-    //testDoubleLinkedList();
-    loadData("test.txt");
-    
-    cout << "原始数据: " << endl;
-    for (int i=0;i<an_arr.getSize();++i) {
-        cout <<an_arr[i] << endl;
-    }
-    vector<string> stopWords = {"是", "了", "的", "了","哉","一","app","std::"};
-    cleanData(an_arr.getarr(),stopWords);
-    cout<<"寻找包含关键词的句子"<<endl;
-    auto ans=searchInLL(an_arr.getarr(),"1");
-    for(auto &i:ans){
-        cout<<i<<endl;
-    }
-
-
+    testGraph();
     return 0;
 }

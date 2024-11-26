@@ -1,14 +1,6 @@
 #pragma once
 #include"CommonHeaders.h"
 
-// void loadData(const string& filename) { 
-//     ifstream file(filename); // 打开文件流
-//     string line;
-    
-//     while (getline(file, line)) { // 逐行读取文件内容
-//         list.insert(line); // 将每一行插入到链表中
-//     }
-// }
 
 void removeDuplicates(vector<string>& data)
  {

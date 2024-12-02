@@ -2,6 +2,178 @@
 #include "CommonHeaders.h"
 
 template <typename T>
+class treeNode{
+    public:
+        T data;
+        treeNode<T>* left;
+        treeNode<T>* right;
+        treeNode<T>* parent;
+        treeNode(const T& value)
+            : data(value), left(nullptr), right(nullptr), parent(nullptr) {}
+};
+template<>
+class treeNode<DialogueData> {
+public:
+    DialogueData data;
+    treeNode* left;
+    treeNode* right;
+
+    treeNode(const DialogueData& value) : data(value), left(nullptr), right(nullptr) {}
+};
+template <typename T>
+class BinarySearchTree{
+    private:
+        treeNode<T>* root;
+        treeNode<T>* insert(treeNode<T>* node,const T& value){
+            if(!node){
+                return new treeNode<T>(value);
+            }
+            if(value<node->data){
+                node->left = insert(node->left,value);
+            }else if(value>node->data){
+                node->right = insert(node->right,value);
+            }else{
+                return node;
+            }
+            return node;
+        }
+        treeNode<T>* remove(treeNode<T>* node,const T& value)
+        {
+            if(!node){
+                return nullptr;
+            }
+            if(value<node->data){
+                node->left = remove(node->left,value);
+            }else if(value>node->data){
+                node->right = remove(node->right,value);
+            }else{
+                if(!node->left){
+                    treeNode<T>* temp = node->right;
+                    delete node;
+                    return temp;
+                }else if(!node->right){
+                    treeNode<T>* temp = node->left;
+                    delete node;
+                    return temp;
+                }else{
+                    treeNode<T>* temp = node->right;
+                    while(temp->left){
+                        temp = temp->left;
+                    }
+                    node->data = temp->data;
+                    node->right = remove(node->right, temp->data);
+                }
+            }
+            return node;
+        }
+        treeNode<T>* find(treeNode<T>* node,const T& value)
+        {
+            if(!node){
+                return nullptr;
+            }
+            if(value<node->data){
+                return find(node->left,value);
+            }else if(value>node->data){
+                return find(node->right,value);
+            }else{
+                return node;
+            }
+        }
+        //应对宽字符情况
+    
+        
+
+        void inOrderTraversal(treeNode<T>* node){
+            if(node){
+                inOrderTraversal(node->left);
+                std::cout<<node->data<<"  with hash value"<<HashOfNode(node)<<std::endl;
+                inOrderTraversal(node->right);
+                
+            }
+
+
+        }
+        
+        void preOrderTraversal(treeNode<T>* node);
+        void postOrderTraversal(treeNode<T>* node);
+        
+    public:
+        BinarySearchTree() : root(nullptr) {}
+        void insert(const T& value) {
+            root = insert(root, value);
+        }
+        void remove(const T& value) {
+            root = remove(root, value);
+        }
+        void inOrderTraversal() {
+            inOrderTraversal(root);
+        }
+        void preOrderTraversal() {
+            preOrderTraversal(root);
+        }
+        void postOrderTraversal() {
+            postOrderTraversal(root);
+        }
+};
+
+
+template<>
+class BinarySearchTree<DialogueData> {
+public:
+    BinarySearchTree() : root(nullptr) {}
+
+    ~BinarySearchTree() {
+        destroyTree(root);
+    }
+
+    void insert(const DialogueData& value) {
+        root = insertRec(root, value);
+    }
+
+    void inOrderTraversal() {
+        inOrderTraversalRec(root);
+    }
+
+private:
+    treeNode<DialogueData>* root;
+
+    treeNode<DialogueData>* insertRec(treeNode<DialogueData>* node, const DialogueData& value) {
+        if (node == nullptr) {
+            return new treeNode<DialogueData>(value);
+        }
+
+        if (value < node->data) {
+            node->left = insertRec(node->left, value);
+        } else if (node->data < value) {
+            node->right = insertRec(node->right, value);
+        } else {
+            // 如果用户输入相同，可以选择更新回复或不插入重复数据
+            // 这里假设不插入重复的用户输入
+        }
+        return node;
+    }
+
+    void inOrderTraversalRec(treeNode<DialogueData>* node) {
+        if (node != nullptr) {
+            inOrderTraversalRec(node->left);
+            // 输出节点数据
+            std::wcout << L"用户: " << node->data.userInput << std::endl;
+            std::wcout << L"助手: " << node->data.llmResponse << std::endl;
+            std::wcout << L"------------------------" << std::endl;
+            inOrderTraversalRec(node->right);
+        }
+    }
+
+    void destroyTree(treeNode<DialogueData>* node) {
+        if (node != nullptr) {
+            destroyTree(node->left);
+            destroyTree(node->right);
+            delete node;
+        }
+    }
+};
+
+template <typename T>
 class AVLTreeNode {
 public:
     T data;

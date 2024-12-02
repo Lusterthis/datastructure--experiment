@@ -55,185 +55,180 @@ class Array{
 };
 
 
+template<typename T>
 struct Node{
     public:
-        int value;
-        Node*next;
-        Node(int v):value(v),next(nullptr){}
+        T value;
+        Node<T>* next;
+        Node(T v): value(v), next(nullptr) {}
 };
 
-//template<typename T>
+template<typename T>
 class SingleLinkedList{
     public:
+        Node<T>* head;
+        int size = 0; 
+        SingleLinkedList() : head(nullptr) {}
 
-        Node*head;
-        int size=0; 
-        SingleLinkedList(){
-            
+        void Init() { // 初始化链表即为定义链表头，同时作为虚拟头结点,复杂度为O(1)
+            head = new Node<T>(T());
+            head->next = nullptr;
+            size = 0;
         }
-        void Init(){//初始化链表即为定义链表头，同时作为虚拟头结点,复杂度为O(1)
-           
-            head=new Node(0);
-
-            head->next=nullptr;
-            size=0;
-        }
-        void Insert(int value,int index){
-            
-            if(index>size||index<0){
-                
-                cout<<"Invalid index"<<endl;
-
+        
+        void Insert(T value, int index=-114514) {
+            if(index == -114514)
+                index = size;
+            if(index > size || index < 0) {
+                cout << "Invalid index" << endl;
                 return;
             }
-            Node * newNode=new Node(value);
-            Node* cur=head;
-            for(int i=0;i<index&&cur!=nullptr;i++){
-                cur=cur->next;
-                
+            Node<T>* newNode = new Node<T>(value);
+            Node<T>* cur = head;
+            for(int i = 0; i < index && cur != nullptr; i++) {
+                cur = cur->next;
             }
-         
-            newNode->next=cur->next;//将新节点的next指向head的next,复杂度为O(1),要注意先后顺序，
-            //不能先将head的next指向newNode,否则会丢失head的next
-            cur->next=newNode;
+            newNode->next = cur->next;
+            cur->next = newNode;
             ++size;
         }
-        void Remove(int index){
-            if(index>=size||index<0){
 
-                cout<<"Invalid index to remove"<<endl;
+        void Remove(int index) {
+            if(index >= size || index < 0) {
+                cout << "Invalid index to remove" << endl;
                 return;
             }
-            Node * temp=head;
-            for(int i=0;i<index;i++){
-                temp=temp->next;
+            Node<T>* temp = head;
+            for(int i = 0; i < index; i++) {
+                temp = temp->next;
             }
-            Node* removeNode=temp->next;
-            
-            temp->next=removeNode->next;
+            Node<T>* removeNode = temp->next;
+            temp->next = removeNode->next;
             delete removeNode;
-
-            
             --size;
         }
-        void Find(int value){
-            Node* cur=head->next;
-            int index=0;
-            bool found=false;
-            while(cur!=nullptr){
-                if(cur->value==value){
-                    found=true;
 
-                    cout<<"Found at index "<<index<<endl;
-                   
+        void Find(T value) {
+            Node<T>* cur = head->next;
+            int index = 0;
+            bool found = false;
+            while(cur != nullptr) {
+                if(cur->value == value) {
+                    found = true;
+                    cout << "Found at index " << index << endl;
                 }
-                cur=cur->next;
+                cur = cur->next;
                 index++;
             }
             if(!found)
-            cout<<"Not found"<<endl;
-        }//查找元素value,并输出其所有的下标,如果不存在则输出"Not found",复杂度为O(n)
-        void Update(int value,int index){
-            Node* cur=head->next;
-            for(int i=0;i<index;i++){
-                cur=cur->next;
-            }
-            if(cur==nullptr||index<0){
-                cout<<"Invalid index"<<endl;
+                cout << "Not found" << endl;
+        }
+
+        void Update(T value, int index) {
+            if(index < 0 || index >= size) {
+                cout << "Invalid index" << endl;
                 return;
             }
-            cur->value=value;
-        }//更新指定位置的元素,复杂度为O(n)
-
+            Node<T>* cur = head->next;
+            for(int i = 0; i < index; i++) {
+                cur = cur->next;
+            }
+            cur->value = value;
+        }
 };
+
+template<typename T>
 class dNode{
     public:
-        int value;
-        dNode*next;
-        dNode*prev;
-        dNode(int value):value(value),next(nullptr),prev(nullptr){}
+        T value;
+        dNode<T>* next;
+        dNode<T>* prev;
+        dNode(T v): value(v), next(nullptr), prev(nullptr) {}
 };
+
+template<typename T>
 class DoubleLinkedList{
     public:
-        dNode*head;
-        dNode* tail;
-        int size=0;
-    
-        DoubleLinkedList():head(nullptr){}
-        void Init(){//初始化链表即为定义链表头，同时作为虚拟头结点,复杂度为O(1)
-            
-            head=new dNode(0);
-            head->next=nullptr;
-            head->prev=nullptr;
-            tail=head;
-            size=0;
-        }
-        void Insert(int value,int index){//在指定位置插入元素,只需改变指针指向，复杂度为O(n)，但是远快于数组，因为数组需要移动元素
-         if(index>size||index<0){
-                
-                cout<<"Invalid index"<<endl;
-                return;
-            }
-            dNode * newNode=new dNode(value);
-            dNode* cur=head;
-            for(int i=0;i<index;i++){
-                cur=cur->next;
-            }
-           
-            newNode->next=cur->next;//将新节点的next指向head的next,复杂度为O(1),要注意先后顺序，
-            //不能先将head的next指向newNode,否则会丢失head的next
-            cur->next=newNode;
-            newNode->prev=cur;
-            ++size;
+        dNode<T>* head;
+        dNode<T>* tail;
+        int size = 0;
 
+        DoubleLinkedList() : head(nullptr), tail(nullptr) {}
+
+        void Init() { // 初始化链表即为定义链表头，同时作为虚拟头结点,复杂度为O(1)
+            head = new dNode<T>(T());
+            head->next = nullptr;
+            head->prev = nullptr;
+            tail = head;
+            size = 0;
         }
-        void Remove(int index)
-        {
-            dNode * temp=head;
-            for(int i=0;i<index;i++){
-                temp=temp->next;
-            }
-            if(temp==nullptr||index<0){
-                cout<<"Invalid index"<<endl;
+
+        void Insert(T value, int index) { // 在指定位置插入元素
+            if(index > size || index < 0) {
+                cout << "Invalid index" << endl;
                 return;
             }
-            temp->next=temp->next->next;
-            temp->next->prev=temp;
+            dNode<T>* newNode = new dNode<T>(value);
+            dNode<T>* cur = head;
+            for(int i = 0; i < index; i++) {
+                cur = cur->next;
+            }
+            newNode->next = cur->next;
+            if(cur->next != nullptr)
+                cur->next->prev = newNode;
+            cur->next = newNode;
+            newNode->prev = cur;
+            if(newNode->next == nullptr)
+                tail = newNode;
+            ++size;
+        }
+
+        void Remove(int index) {
+            if(index < 0 || index >= size) {
+                cout << "Invalid index" << endl;
+                return;
+            }
+            dNode<T>* temp = head;
+            for(int i = 0; i < index; i++) {
+                temp = temp->next;
+            }
+            dNode<T>* removeNode = temp->next;
+            temp->next = removeNode->next;
+            if(removeNode->next != nullptr)
+                removeNode->next->prev = temp;
+            else
+                tail = temp;
+            delete removeNode;
             --size;
         }
-        void Find(int value)
-        {
-            dNode* cur=head->next;
-            int index=0;
-            bool found=false;
-            while(cur!=nullptr){
-                if(cur->value==value){
-                    found=true;
 
-                    cout<<"Found at index "<<index<<endl;
-
+        void Find(T value) {
+            dNode<T>* cur = head->next;
+            int index = 0;
+            bool found = false;
+            while(cur != nullptr) {
+                if(cur->value == value) {
+                    found = true;
+                    cout << "Found at index " << index << endl;
                 }
-                cur=cur->next;
+                cur = cur->next;
                 index++;
             }
             if(!found)
-            cout<<"Not found"<<endl;
-        }//查找元素value,并输出其所有的下标,如果不存在则输出"Not found",复杂度为O(n)
-        void Update(int value,int index)
-        {
-            dNode* cur=head->next;
-            for(int i=0;i<index;i++){
-                cur=cur->next;
-            }
-            if(cur==nullptr||index<0){
-                cout<<"Invalid index"<<endl;
+                cout << "Not found" << endl;
+        }
+
+        void Update(T value, int index) {
+            if(index < 0 || index >= size) {
+                cout << "Invalid index" << endl;
                 return;
             }
-            cur->value=value;
-        }//更新指定位置的元素,复杂度为O(n)
-
-
-
+            dNode<T>* cur = head->next;
+            for(int i = 0; i < index; i++) {
+                cur = cur->next;
+            }
+            cur->value = value;
+        }
 };
 void testArray(){
     Array<int> arr(10);
@@ -269,7 +264,7 @@ void testArray(){
 
 }
 void testSingleLinkedList(){
-    SingleLinkedList list;
+    SingleLinkedList<int>  list;
     list.Init();
     list.Insert(1,0);
     list.Insert(2,1);
@@ -280,7 +275,7 @@ void testSingleLinkedList(){
     list.Insert(7,6);
     list.Insert(8,7);
     cout<<"Initial list:"<<endl;
-    Node* cur=list.head->next;
+    Node<int>* cur=list.head->next;
     while(cur!=nullptr){
         
         cout<<cur->value<<" ";
@@ -309,7 +304,7 @@ void testSingleLinkedList(){
     
 }
 void testDoubleLinkedList(){
-    DoubleLinkedList list;
+    DoubleLinkedList<int> list;
     list.Init();
     list.Insert(1,0);
     list.Insert(2,1);
@@ -320,7 +315,7 @@ void testDoubleLinkedList(){
     list.Insert(7,6);
     list.Insert(8,7);
     cout<<"Initial double-linked list:"<<endl;
-    dNode* cur=list.head->next;
+    dNode<int>* cur=list.head->next;
     while(cur!=nullptr){
         cout<<cur->value<<" ";
         cur=cur->next;
